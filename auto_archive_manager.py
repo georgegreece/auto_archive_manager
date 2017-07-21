@@ -13,6 +13,13 @@ import re
 import shutil
 import zipfile
 
+def is_number(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+    
 
 def get_dir():
     """ Get the location of folder with zipped files from the user"""
@@ -25,13 +32,18 @@ def get_dir():
           ''')
 
     location = input('..')
-    if location:
-        if location.lower() == 'q':
-            sys.exit()
-        else:
-            return location
+    
+    if location.lower() == 'q':
+        sys.exit()
     else:
-        print("Please enter the location")
+        try:
+            os.chdir(location)
+        except FileNotFoundError:
+            print('''Folder does not exist, Please enter a valid folder.
+                  ''')
+            location = input('..')
+        return location
+ 
 
 
 dir_location = get_dir()
@@ -98,7 +110,11 @@ def unzip_files():
                         2. Move all zipped files into one folder
                         3. Do nothing
             ''')
-    choice = int(input('..'))
+    choice = input('..')
+    while not is_number(choice):
+        print('''Please enter a valid choice.''')
+        choice = input('..')
+    choice = int(choice)
     if choice == 1:
         delete_zipped_files()
     elif choice == 2:
@@ -114,8 +130,11 @@ def get_action():
                1. zip
                2.unzip
           ''')
-    action = int(input('..'))
-
+    action = input('..')
+    while not is_number(action):
+        print('''Please enter a valid option.''')
+        action = input('..')
+    action = int(action)
     if action == 1:
         zip_files()
     else:
